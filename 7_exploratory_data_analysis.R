@@ -489,4 +489,27 @@ ggplot(data = diamonds, aes(x = cut, y = price)) +
 # ggplot(data = diamonds, aes(x = cut, y = price)) + 
 #   ggbeeswarm::geom_beeswarm() ## sth wrong - very slow computing, I stopped it 
 
-# 7.5.2
+# 7.5.2 two categorical vars
+# to vis the covariation between two cat vars we need to count
+# the number of observations for each combination
+# like in a crosstab
+
+ggplot(data = diamonds) +
+  geom_count(mapping = aes(cut, color))
+
+diamonds %>% 
+  count(color, cut)
+
+diamonds %>% 
+  count(color, cut) %>% 
+  ggplot(aes(color, cut)) +
+  geom_tile(aes(fill = n))
+
+# plot tunning
+diamonds %>% 
+  count(color, cut) %>% 
+  ggplot(aes(color, cut)) +
+  geom_tile(aes(fill = -n)) +
+  coord_flip()
+
+# 7.5.2.1 excercises
