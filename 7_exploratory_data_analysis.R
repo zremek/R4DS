@@ -513,3 +513,94 @@ diamonds %>%
   coord_flip()
 
 # 7.5.2.1 excercises
+
+# 1.
+
+## show count
+diamonds %>% 
+  count(cut, color) %>% 
+  ggplot(aes(color, n, group = cut, fill = cut)) +
+  geom_col(position = "dodge", colour = "white")
+
+diamonds %>% 
+  count(cut, color) %>% 
+  ggplot(aes(cut, n, group = color, fill = color)) +
+  geom_col(position = "dodge", colour = "white")
+
+diamonds %>% 
+  count(cut, color) %>% 
+  ggplot(aes(color, n, fill = cut)) +
+  geom_col() +
+  facet_grid(. ~ cut)
+
+diamonds %>% 
+  count(cut, color) %>% 
+  ggplot(aes(cut, n, fill = color)) +
+  geom_col() +
+  facet_grid(. ~ color) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+## show prop 
+
+# color by cut, 100% stacked bars
+diamonds %>% 
+  count(cut, color) %>% 
+  ggplot(aes(color, n, group = cut, fill = cut)) +
+  geom_col(position = "fill", colour = "white")
+
+# cut by color, 100% stacked bars
+diamonds %>% 
+  count(cut, color) %>% 
+  ggplot(aes(cut, n, group = color, fill = color)) +
+  geom_col(position = "fill", colour = "white")
+
+# color by cut, position dodge - easy to compare 
+# how cuts are distributed in each color
+diamonds %>%
+  count(color, cut) %>%
+  group_by(color) %>%
+  mutate(prop = n / sum(n)) %>% 
+  ggplot(aes(color, prop, group = cut, fill = cut)) +
+  geom_col(position = "dodge", colour = "white") +
+  scale_y_continuous(labels = scales::percent) +
+  labs(caption = "each color = 100%")
+
+
+# cut by color, position dodge - easy to compare 
+# how colors are distributed in each cut
+diamonds %>%
+  count(color, cut) %>%
+  group_by(cut) %>%
+  mutate(prop = n / sum(n)) %>% 
+  ggplot(aes(cut, prop, group = color, fill = color)) +
+  geom_col(position = "dodge", colour = "white") +
+  scale_y_continuous(labels = scales::percent) +
+  labs(caption = "each cut = 100%")
+
+# 2.Use geom_tile() together with dplyr to explore how average 
+# flight delays vary by destination and month of year. 
+# What makes the plot difficult to read? How could you improve it?
+
+nycflights13::flights %>% 
+  group_by(dest, month) %>% 
+  summarise(avg_arr_delay = mean(arr_delay, na.rm = TRUE)) %>% 
+  ggplot(aes(x = month %>% as.factor(), y = dest)) +
+  geom_tile(aes(fill = avg_arr_delay))
+
+# improve by removing destinations
+# with more than 2 empty months
+# and different colours
+flights %>% 
+  group_by(dest, month) %>% 
+  summarise(avg_arr_delay = mean(arr_delay, na.rm = TRUE)) %>% 
+  group_by(dest) %>% 
+  filter(n() >= 10) %>% 
+  ungroup() %>% 
+  ggplot(aes(x = month %>% as.factor(), y = dest)) +
+  geom_tile(aes(fill = avg_arr_delay)) +
+  scale_fill_gradient(low = "orange", high = "blue")
+
+# 3. because color (x axis) has more levels
+# than cut (y axis), so it makes the plot
+# wider than higher
+# like more computer screens
