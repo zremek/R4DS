@@ -604,3 +604,98 @@ flights %>%
 # than cut (y axis), so it makes the plot
 # wider than higher
 # like more computer screens
+
+# 7.5.3
+
+smaller <- diamonds %>% 
+  filter(carat < 3)
+
+smaller %>% ggplot() +
+  geom_bin2d(aes(carat, price))
+
+smaller %>% ggplot() +
+  geom_hex(aes(carat, price))
+
+# those geoms above divide the coordinate plane into 2 dimensional bins
+# and then use a fill color to display how many points
+# fall into each bin
+
+# we can bin just one variable to act like a discret / categorical one
+
+smaller %>% ggplot() +
+  geom_boxplot(aes(x = cut_width(carat, width = 0.1),
+                   y = price)) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+# better solution - Hadley:
+
+smaller %>% ggplot(aes(x = carat, y = price)) +
+  geom_boxplot(aes(group = cut_width(carat, width = 0.1)))
+
+# disadvantage is that we don't see quantity of points
+# One way to show that is to make the width 
+# of the boxplot proportional to the number of points with
+# varwidth
+
+
+smaller %>% ggplot(aes(x = carat, y = price)) +
+  geom_boxplot(aes(group = cut_width(carat, width = 0.1)),
+               varwidth = TRUE)
+
+smaller %>% ggplot(aes(x = carat, y = price)) +
+  geom_violin(aes(group = cut_width(carat, width = 0.25))) # not good
+
+# another way is to display approx. same number of points in each bin
+
+smaller %>% ggplot(aes(x = carat, y = price)) +
+  geom_boxplot(aes(group = cut_number(carat, n = 20))) 
+### n in cut_number is a number of intervals to create
+
+# 7.5.3.1 excercises
+
+# 1.
+
+smaller %>% ggplot(aes(x = price, colour = cut_width(carat, width = 0.5))) +
+  geom_freqpoly(size = 1.5)
+# bins are equal, but differs in number of points
+
+smaller %>% ggplot(aes(x = price, colour = cut_number(carat, n = 10))) +
+  geom_freqpoly(size = 1)
+# number of points is equal for each bin, but bins are different in width
+## both cases we should consider number of "categories" = bins created
+
+# 2.
+
+smaller %>% ggplot(aes(x = price, y = carat)) +
+  geom_hex()
+
+# 3.
+# diamonds 0-1 carat have right-skeewed distributions, 
+# relatively smaller variance in prices
+
+# 1-2 are more symeric distributions
+# higher variance
+
+# 2-3 are left-skeewed
+# highest variance
+
+# 4.
+
+smaller %>% ggplot(aes(x = carat, y = price, color = cut)) +
+  geom_point(alpha = 0.5)
+
+smaller %>% ggplot(aes(x = carat, y = price, color = cut)) +
+  geom_point(alpha = 0.5) +
+  geom_boxplot(aes(group = cut_width(carat, width = 0.1)))
+  
+smaller %>% ggplot(aes(x = cut_number(carat, n = 10),
+                       y = price,
+                       colour = cut)) +
+  geom_boxplot()
+
+smaller %>% ggplot(aes(x = carat, y = price)) +
+  geom_bin2d() +
+  facet_wrap( ~ cut, ncol = 1)
+
+# 5.
+# because on binned plot we lose accuracy on x axis
