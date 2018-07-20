@@ -699,3 +699,58 @@ smaller %>% ggplot(aes(x = carat, y = price)) +
 
 # 5.
 # because on binned plot we lose accuracy on x axis
+
+# 7.6 Patterns and models
+
+faithful %>% ggplot(aes(eruptions, waiting)) + 
+  geom_point()
+# visible pattern: more eruptions asociated with longer
+# waiting time. we see two clusters, <= 3.5 erupion and > 3.5
+
+###################
+# variation is a phenomenon that creates uncertanity,
+# covariation is a phenomenon that reduces it.
+##################
+
+# models are a tool for extracting patterns from data
+mod <- lm(log(price) ~ log(carat), data = diamonds)
+summary(mod)
+plot(mod)
+
+diamonds_2 <- diamonds %>% 
+  modelr::add_residuals(model = mod) %>% 
+  mutate(resid = exp(resid))
+
+ggplot(diamonds_2) +
+  geom_point(aes(x = carat, y = resid))
+
+ggplot(diamonds_2) +
+  geom_boxplot(aes(x = cut, y = resid))
+# because we "removed" stron relationship between carat and price,
+# using the linear model,
+# now it's visible that better quality diamonds are more expensive,
+# relativeli to their size
+
+# 7.7 ggplot2 calls
+
+# explicit way:
+ggplot(data = faithful, mapping = aes(x = eruptions)) +
+  geom_freqpoly(binwidth = 0.25)
+
+# short way:
+ggplot(faithful, aes(eruptions)) +
+  geom_freqpoly(binwidth = 0.25)
+
+### Typically, the first one or two arguments to a function
+### are so important that you should know them by heart.
+
+# be carefull for the transition
+# from %>%  to +
+
+diamonds %>% 
+  count(cut, clarity) %>% 
+  ggplot(aes(clarity, cut, fill = n)) +
+  geom_tile()
+
+# more help with ggplot2:
+# http://www.cookbook-r.com/Graphs/
