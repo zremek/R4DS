@@ -1,3 +1,6 @@
+library(tidyverse)
+library(nycflights13)
+
 # http://r4ds.had.co.nz/exploratory-data-analysis.html
 
 ## chapter is about using visualisation and transformation
@@ -193,10 +196,10 @@ diamonds %>%
 
 diamonds %>% select(x, y, z) %>% summary()
 
-apply(diamonds %>% select(x, y, z), 2, shapiro.test) 
+# apply(diamonds %>% select(x, y, z), 2, shapiro.test) 
 # only for < 5000 data points :)
 
-install.packages("nortest")
+# install.packages("nortest")
 library(nortest)
 
 apply(diamonds %>% select(x, y, z), 2, nortest::ad.test) 
@@ -445,7 +448,7 @@ corrplot::corrplot(cor_d)
 # the biggest diamonds tend to have "fair" cut
 
 # 3. 
-install.packages("ggstance")
+# install.packages("ggstance")
 library(ggstance)
 # https://cran.r-project.org/web/packages/ggstance/ggstance.pdf
 
@@ -455,7 +458,7 @@ ggplot(data = diamonds, aes(y = cut, x = price)) +
 
 
 # 4. 
-install.packages("lvplot")
+# install.packages("lvplot")
 library(lvplot)
 
 ggplot(data = diamonds, aes(x = cut, y = price)) + 
@@ -479,7 +482,7 @@ ggplot(data = diamonds, aes(x = price, y = ..density..)) +
   geom_freqpoly(aes(colour = cut), size = 1)
 
 # 6. 
-install.packages("ggbeeswarm")
+# install.packages("ggbeeswarm")
 library(ggbeeswarm)
 ?ggbeeswarm
 
@@ -718,7 +721,7 @@ summary(mod)
 plot(mod)
 
 diamonds_2 <- diamonds %>% 
-  modelr::add_residuals(model = mod) %>% 
+  modelr::add_residuals(data = ., model = mod) %>% 
   mutate(resid = exp(resid))
 
 ggplot(diamonds_2) +
