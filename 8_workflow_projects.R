@@ -16,4 +16,5 @@ getwd()
 
 ### R experts keep all the files associated with a project together — 
 ### input data, R scripts, analytical results, figures. 
-### This is such a wise and common practice that RStudio has built-in support for this via projects.
+### This is such a wise and common practice that RStudio 
+### has built-in support for this via projects.
