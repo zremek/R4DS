@@ -103,3 +103,73 @@ diamonds %>%
 tb %>% as.data.frame() %>% class()
 
 # 10.5 excercises
+# 1.
+print(mtcars) # n = 5 doesn't work
+mtcars %>% as_tibble() %>% print(n = 5)
+class(mtcars)
+mtcars %>% as_tibble() %>% class() # check class
+
+# 2.
+df <- data.frame(
+  abc = 1,
+  xyz = "a"
+)
+
+df_t <- as_tibble(df)
+
+df$x # no warning! partial matching?
+df_t$x # warning - unknown column
+
+df[, "xyz"]
+df_t[, "xyz"]
+
+df[, c("abc", "xyz")]
+df_t[, c("abc", "xyz")]
+
+# 3.
+var <- "mpg"
+mtcars %>% as_tibble() %>% select(var)
+
+# 4.
+annoying <- tibble(
+  `1` = 1:10,
+  `2` = `1` * 2 + rnorm(length(`1`))
+)
+
+# 4.1
+annoying %>% select(`1`)
+
+# 4.2
+annoying %>% ggplot(aes(x = `1`, y = `2`)) +
+  geom_point()
+
+# 4.3
+annoying <- annoying %>% mutate(`3` = `2` / `1`)
+
+# 4.4
+annoying %>% rename(one = `1`,
+                    two = `2`,
+                    three = `3`)
+
+# 5.
+?tibble::enframe
+# turn named vector into a two column tibble
+islands
+enframe(islands)
+
+regular_slinky_strings <- c(.10, .13, .17, .26, .36, .46)
+names(regular_slinky_strings) <- c("E", "B", "G", "D", "A", "E")
+enframe(regular_slinky_strings)
+
+mod <- lm(log(price) ~ log(carat), data = diamonds)
+summary(mod) %>% enframe()
+
+# 6.
+library(nycflights13)
+nycflights13::flights
+
+# n_extra in print() controls
+# how many additional coulmn names
+# are printed at the footer:
+nycflights13::flights %>% print(n_extra = 2)
+nycflights13::flights %>% print(n_extra = 7)
