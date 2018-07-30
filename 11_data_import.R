@@ -107,3 +107,40 @@ read_csv("a,b\n1,2\na,b")
 read_csv("a;b\n1;3")
 # ";" as delimiter, use read_csv2()
 read_csv2("a;b\n1;3")
+
+# 11.3 Parsing a vector
+c("TRUE", "FALSE", "NA") %>% parse_logical() %>% str()
+str(parse_integer(c("1", "2", "3")))
+str(parse_date(c("2010-01-01", "1979-10-14")))
+
+# specify missing
+parse_integer(c("1", "231", ".", "456"), na = ".")
+
+# warnings
+parse_warning <- parse_integer(c("123", "abc", "334", "33.23"))
+parse_warning
+problems(parse_warning) # get set of problems in a tibble
+
+### using parsers is mostly a matter of understanding 
+### what's available and how they deal with different types of input
+
+# 11.3.1 parsing numbers
+
+# problems with numbers:
+# decimal mark could be "." or ","
+# context characters like $ or %
+# grouping characters like "," in 1,000,000 - they vary around the world
+
+parse_double("1.23")
+parse_double("1,23", locale = locale(decimal_mark = ","))
+
+parse_number("$100")
+parse_number("20%")
+parse_number("It costs $124.45") #decimals work
+
+parse_number("$123,456,345.99", # decimals rounds
+             locale = locale(decimal_mark = ".",
+                             grouping_mark = ","))
+parse_number("1,234,567.78")
+parse_number("123.456.789 zł", 
+             locale = locale(grouping_mark = "."))
