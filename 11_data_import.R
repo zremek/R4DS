@@ -144,3 +144,79 @@ parse_number("$123,456,345.99", # decimals rounds
 parse_number("1,234,567.78")
 parse_number("123.456.789 zł", 
              locale = locale(grouping_mark = "."))
+
+
+# 11.3.2 Parsing strings
+
+# To understand what’s going on, 
+# we need to dive into the details of how computers represent strings
+
+charToRaw("Remigiusz")
+charToRaw("Hadley")
+
+# mapping from hexadecimal number to character is called encoding
+# this is ASCII - American Standard Code ...
+# for other languages UTF-8 is used widely
+# readr uses UTF-8 everywhere
+# it may cause problems for older systems
+
+x1 <- "El Ni\xf1o was particularly bad this year"
+x2 <- "\x82\xb1\x82\xf1\x82\xc9\x82\xbf\x82\xcd"
+x1
+x2
+
+parse_character(x1, locale = locale(encoding = "Latin1"))
+parse_character(x2, locale = locale(encoding = "Shift-JIS"))
+
+# guess encoding
+
+guess_encoding(charToRaw(x1))
+guess_encoding(charToRaw(x2))
+
+# resource about encoding:
+# http://kunststube.net/encoding/
+
+# 11.3.3 Parsing factors
+
+fruit <- c("apple", "banana")
+parse_factor(c("apple", "banana", "Banana"), levels = fruit)
+
+# when there are many problematic entries,
+# it's easier to use character vector
+# and clean it later
+
+# 11.3.4 Parsing dates, date-times, and times
+
+parse_datetime("2010-10-10T2010")
+
+# parser above expects datetime in ISO8601 form:
+# year, month, day, hour, minute, second
+
+parse_date("2010/10/10")
+parse_date("2018-08-07")
+
+# four digits year /|: two month /|: two day
+
+require(hms) # library for classes of date-time data
+parse_time("01:10 am")
+parse_time("14:02")
+parse_time("02:02 pm")
+
+# we can use other formats with classes
+
+parse_date("01/02/15", "%m/%d/%y")
+parse_date("01/02/15", "%d/%m/%y")
+parse_date("01/02/15", "%y/%m/%d")
+
+parse_date("2 janvier 2015", "%d %B %Y", locale = locale("fr"))
+parse_date("3 marca 2016", "%d %B %Y", locale = locale("pl"))
+
+# 11.3.5 excercises
+# 1.
+?locale()
+vignette("locales")
+locale()
+
+# 2. to finish!
+parse_number("22,01", locale = locale(decimal_mark = ",", grouping_mark = ","))
+parse_number("34.22,01", locale = locale(decimal_mark = ","))
