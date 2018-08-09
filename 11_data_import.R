@@ -217,6 +217,74 @@ parse_date("3 marca 2016", "%d %B %Y", locale = locale("pl"))
 vignette("locales")
 locale()
 
-# 2. to finish!
+# 2.1
 parse_number("22,01", locale = locale(decimal_mark = ",", grouping_mark = ","))
-parse_number("34.22,01", locale = locale(decimal_mark = ","))
+parse_double("22,01", locale = locale(decimal_mark = ",", grouping_mark = ","))
+  # Error: `decimal_mark` and `grouping_mark` must be different
+  # in parse_number the grouping mark specified by the locale is ignored inside the number
+# 2.2
+parse_double("3,422.01", locale = locale(decimal_mark = ".", grouping_mark = ","))
+  # above grouping mark causes error
+parse_number("3,422.01", locale = locale(decimal_mark = ".", grouping_mark = ","))
+  # ok
+parse_number("3.422,01", locale = locale(decimal_mark = ","))
+  # ok, so "." is recognised as grouping mark - default grouping changes to "."
+locale(decimal_mark = ",")
+
+parse_number("3'422,01", locale = locale(decimal_mark = ","))
+  # wrong parsed to 3, no warnings
+# 2.3
+parse_number("3.422,01", locale = locale(grouping_mark = "."))
+  # ok, so default decimal changes to ","
+locale(grouping_mark = ".")
+
+
+# 3.
+?locale
+?date_format
+?strptime # all formats
+
+strange_date_time <- "98--11--29 02:25:04 pm"
+parse_datetime(strange_date_time, "%y--%m--%d %I:%M:%S %p")
+
+parse_date("98--11--29", locale = locale(date_format = "%y--%m--%d"))
+parse_time("02:25:04 pm", locale = locale(time_format = "%I:%M:%S %p"))
+
+# parse_datetime(strange_date_time,
+#                locale = locale(
+#                  date_format = "%y--%m--%d ",
+#                  time_format = "%I:%M:%S %p")
+#                )
+## doesn't work
+
+# 4.
+czech_locale <- locale(date_format = "%d.%m.%Y")
+parse_date("02.08.1987", locale = czech_locale)
+
+# 5.
+# read_csv2() uses ";" as a separator, instead of ","
+# it's for Europe, where "," is decimal mark
+
+# 6.
+# UTF-8 and sometimes UTF-16 are used both in Europe and Asia
+# in Europe ISO/IEC 8859 is used; is has few part,
+# for instance Latin-1, Latin-2 (see: https://en.wikipedia.org/wiki/ISO/IEC_8859)
+# in Asia China has GB 18030 (see: https://en.wikipedia.org/wiki/GB_18030)
+# in Japan - Shift JIS (see: https://www.sljfaq.org/afaq/encodings.html)
+
+# 7.
+d1 <- "January 1, 2010"
+d2 <- "2015-Mar-07"
+d3 <- "06-Jun-2017"
+d4 <- c("August 19 (2015)", "July 1 (2015)")
+d5 <- "12/30/14" # Dec 30, 2014
+t1 <- "1705"
+t2 <- "11:15:10.12 PM"
+
+parse_date(d1, "%B%e, %Y")
+parse_date(d2, "%Y-%b-%d")
+parse_date(d3, "%d-%b-%Y")
+parse_date(d4, "%B %d (%Y)")
+parse_date(d5, "%m/%d/%y")
+parse_time(t1, "%H%M")
+parse_time(t2, "%H:%M:%OS %p")
