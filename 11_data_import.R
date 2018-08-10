@@ -288,3 +288,77 @@ parse_date(d4, "%B %d (%Y)")
 parse_date(d5, "%m/%d/%y")
 parse_time(t1, "%H%M")
 parse_time(t2, "%H:%M:%OS %p")
+
+# 11.4 parsing a file
+
+# how readr package guesses the type of each column
+# how to override the default specification
+
+guess_parser("2010-10-10")
+guess_parser("15:01")
+guess_parser(c(TRUE, FALSE))
+guess_parser(1:5)
+guess_parser(seq(0.1, 1, 0.01))
+guess_parser("100,000.01") # number - has grouping marks
+
+str(parse_guess("2010-10-10"))
+parse_guess("2010-10-10")
+
+challenge <- read_csv(readr_example("challenge.csv"))
+problems(challenge)
+problems(challenge) %>% filter(col == "y") # no problems with y col
+
+challenge <- read_csv(
+  readr_example("challenge.csv"),
+                col_types = cols(
+                  x = col_double(),
+                  y = col_character()
+                  )
+                )
+head(challenge)
+tail(challenge)
+
+challenge <- read_csv(
+  readr_example("challenge.csv"),
+  col_types = cols(
+    x = col_double(),
+    y = col_date()
+  )
+)
+
+challenge %>% summary()
+
+# every parse_xyz() has a corresponding col_xyz() function
+# parse_ is used for parsing a vector that we have in R
+# col_ is for data load to R
+
+# I highly recommend always supplying col_types, 
+# building up from the print-out provided by readr
+
+challenge2 <- read_csv(readr_example("challenge.csv"), guess_max = 1001)
+challenge2 # works because we checked one more row in read_csc()
+
+# read all cols as char
+
+challenge3 <- read_csv(readr_example("challenge.csv"),
+                       col_types = cols(.default = col_character())
+                       )
+challenge3 <- type_convert(challenge3) 
+# type_conver applies the parsing heuristic
+
+df <- tribble(
+  ~x, ~y,
+  "1", "1.21",
+  "2", "2.32",
+  "3", "4.56"
+)
+type_convert(df)
+
+# while reading big file, set n_max in read_csv to small number like 10^3,
+# to make first reading iterations faster
+# read a whole file when col types are well known
+
+# if big parsing problems, first read into char vector
+# using read_lines(), or ch vector of lenhth 1 - read_file()
+# then use parsing functions
+
