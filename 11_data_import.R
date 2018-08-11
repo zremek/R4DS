@@ -362,3 +362,40 @@ type_convert(df)
 # using read_lines(), or ch vector of lenhth 1 - read_file()
 # then use parsing functions
 
+# 11. 5 Writing to a file
+
+# write_csv() and write_tsv()
+# both save strings in UTF-8, dates in ISO8601
+
+# for excel use write_excel_csv()
+
+# reminder - writing csv causes lost of col types
+write_csv(challenge, "challenge_write.csv")
+read_csv("challenge_write.csv") # 1000 parsing failrues
+
+# store in R binary data format RDS
+write_rds(challenge, "challenge.rds")
+read_rds("challenge.rds") # col types saved
+
+# the feather pcg for fast, shareable binary data format 
+### problems with installing (Rtool installed):
+# install.packages("feather", dependencies = TRUE)
+# library(feather)
+
+# 11.6 other data types:
+
+## For rectangular data:
+#   
+# haven reads SPSS, Stata, and SAS files.
+# 
+# readxl reads excel files (both .xls and .xlsx).
+# 
+# DBI, along with a database specific backend (e.g. RMySQL, RSQLite, 
+#                                              RPostgreSQL etc)
+# allows you to run SQL queries against a database and return a data frame.
+# 
+## For hierarchical data: use jsonlite (by Jeroen Ooms) for json, and xml2 for XML.
+# Jenny Bryan has some excellent worked examples at 
+# https://jennybc.github.io/purrr-tutorial/.
+# 
+# For other file types, try the R data import/export manual and the rio package.

@@ -6,3 +6,5 @@ R4DS.Rproj
 asymptota_wikipedia.R
 diamonds.csv
 diamonds_vertical_bar.csv
+challenge.rds
+challenge_write.csv
