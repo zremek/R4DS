@@ -60,3 +60,53 @@ ggplot(table1, aes(year, cases)) +
 ggplot(filter(table2, type == "cases"), aes(year, count)) + 
   geom_line(aes(group = country), colour = "grey50") + 
   geom_point(aes(colour = country))
+
+# 12.3
+
+# For most real analyses, you’ll need to do some tidying. 
+# The first step is always to figure out what the variables and observations are. 
+# Sometimes this is easy; other times you’ll need to consult with the people who 
+# originally generated the data. The second step is to resolve one of two common problems:
+#   
+# One variable might be spread across multiple columns.
+# 
+# One observation might be scattered across multiple rows.
+# 
+# Typically a dataset will only suffer from one of these problems; 
+# it’ll only suffer from both if you’re really unlucky! 
+# To fix these problems, you’ll need the two most important functions
+# in tidyr: 
+# gather() and spread().
+
+# 12.3.1 Gathering
+
+tidy4a <- table4a %>% gather(`1999`, `2000`, key = year, value = cases)
+tidy4b <- table4b %>% gather(`1999`, `2000`, key = year, value = population)
+
+# join
+left_join(tidy4a, tidy4b)
+
+# 12.3.2 Spreading
+
+table2 %>% spread(key = type, value = count)
+
+# 12.3.3 excercises
+
+# 1
+stocks <- tibble(
+  year   = c(2015, 2015, 2016, 2016),
+  half  = c(   1,    2,     1,    2),
+  return = c(1.88, 0.59, 0.92, 0.17)
+)
+
+stocks
+
+stocks %>% 
+  spread(year, return) %>% 
+  gather("year", "return", `2015`:`2016`)
+
+# "year" is now stored as character...
+stocks %>% 
+  spread(year, return)
+#... because year's values were names
+# of variables after the spreading
