@@ -24,3 +24,39 @@
 
 # in table 4b situation is same as in 4a,
 # except values: number of population
+
+# 2.
+table1 %>% 
+  mutate(rate = cases / population * 10000)
+
+cases2 <- table2 %>% filter(type == "cases") %>% 
+  rename(cases = count)
+
+population2 <- table2 %>% filter(type == "population") %>% 
+  rename(population = count)
+
+cases2$rate2 <- cases2$cases / population2$population * 10000
+
+# table2 is much harder to work with, because we need to create
+# new, helper datasets instead of just add a variable to  
+
+table4_rate <- table4a
+table4_rate$r_1999 <- table4a$`1999` / table4b$`1999` * 10000
+table4_rate$r_2000 <- table4a$`2000` / table4b$`2000` * 10000
+
+(tmp_00 <- table4_rate %>% select(country, contains(match = "00")) %>% 
+  mutate(year = "2000") %>% rename(cases = `2000`, rate = r_2000))
+(tmp_99 <- table4_rate %>% select(country, contains(match = "99")) %>% 
+  mutate(year = "1999") %>% rename(cases = `1999`, rate = r_1999))
+
+table4_rate <- rbind(tmp_00, tmp_99)
+(table4_rate <- arrange(table4_rate, country, year))
+
+# 3.
+ggplot(table1, aes(year, cases)) + 
+  geom_line(aes(group = country), colour = "grey50") + 
+  geom_point(aes(colour = country))
+# recreate
+ggplot(filter(table2, type == "cases"), aes(year, count)) + 
+  geom_line(aes(group = country), colour = "grey50") + 
+  geom_point(aes(colour = country))
