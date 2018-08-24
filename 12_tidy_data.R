@@ -160,3 +160,69 @@ preg <- tribble(
 )
 
 preg %>% gather(male, female, key = gender, value = n)
+
+# 12.4 separating and uniting
+table3 %>% separate(col = rate, into = c("cases", "population"))
+table3 %>% separate(col = rate,
+                    into = c("cases", "population"),
+                    sep = "/") # explicit separator
+
+(table5 <- table3 %>% separate(col = year, into = c("century", "year"), 
+                    sep = 2)) # two last characters
+
+table5 %>% unite(col = year,
+                 ... = century, year) 
+
+table5 %>% unite(col = year,
+                 ... = century, year,
+                 sep = "") %>% # get rid of default sep 
+  separate(col = rate, into = c("cases", "population"))
+
+# excercises 12.4.3
+
+# 1. 
+tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>% 
+  separate(x, c("one", "two", "three"),
+           extra = "warn") # default: drop and warn
+
+tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>% 
+  separate(x, c("one", "two", "three"),
+           extra = "drop") # drop no warn
+
+tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>% 
+  separate(x, c("one", "two", "three"),
+           extra = "merge") # only splits at most length(into) times
+
+tibble(x = c("a,b,c", "d,e", "f,g,i")) %>% 
+  separate(x, c("one", "two", "three"),
+           fill = "warn") # default: warn and fill with NA's from the right
+
+tibble(x = c("a,b,c", "d,e", "f,g,i")) %>% 
+  separate(x, c("one", "two", "three"),
+           fill = "right") # no warn fill from the right 
+
+tibble(x = c("a,b,c", "d,e", "f,g,i")) %>% 
+  separate(x, c("one", "two", "three"),
+           fill = "left") # no warn fill from the left
+
+# 2. 
+?unite
+# remove	
+# If TRUE, remove input columns from output data frame.
+
+# FALSE may be usefull to comfortably check results of separate()/unite() in one data frame
+
+# 3. 
+?extract
+# with extract() we are able to use regex to "extract" desired values 
+# from an input column
+# we capture groups, so one input and one output is possible
+?separate
+# we may use regex or character position
+# we capture by this markers
+# so it's imposible to make one output column
+table3 %>% separate(col = year, 
+                    into = "century", # next column has name `NA`
+                    sep = 2)
+
+# just one unite method because others have no application
