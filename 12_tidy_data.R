@@ -110,3 +110,53 @@ stocks %>%
   spread(year, return)
 #... because year's values were names
 # of variables after the spreading
+
+?gather
+# convert	
+# If TRUE will automatically run type.convert() on the key column.
+# This is useful if the column names are actually numeric, integer, or logical
+?type.convert
+# Convert a data object to logical, integer, numeric, complex,
+# character or factor as appropriate.
+
+stocks %>% 
+  spread(year, return, 
+         convert = TRUE) %>% 
+  gather("year", "return", `2015`:`2016`,
+         convert = TRUE)
+# now year is stored as integer
+
+# 2.
+# table4a %>% 
+#  gather(1999, 2000, key = "year", value = "cases")
+# Error in inds_combine(.vars, ind_list) : Position must be between 0 and n
+
+
+table4a %>% 
+  gather(`1999`, `2000`, key = "year", value = "cases") # number colnames need ``
+
+# 3. 
+people <- tribble(
+  ~name,             ~key,    ~value,
+  #-----------------|--------|------
+  "Phillip Woods",   "age",       45,
+  "Phillip Woods",   "height",   186,
+  "Phillip Woods",   "age",       50,
+  "Jessica Cordero", "age",       37,
+  "Jessica Cordero", "height",   156
+)
+
+# people %>% spread(key = key, value = value) 
+# Error: Duplicate identifiers for rows (1, 3)
+
+people <- people %>% mutate(id = 1:5)
+people %>% spread(key = key, value = value) 
+
+# 4.
+preg <- tribble(
+  ~pregnant, ~male, ~female,
+  "yes",     NA,    10,
+  "no",      20,    12
+)
+
+preg %>% gather(male, female, key = gender, value = n)
