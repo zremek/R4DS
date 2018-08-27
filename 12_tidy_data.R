@@ -226,3 +226,69 @@ table3 %>% separate(col = year,
                     sep = 2)
 
 # just one unite method because others have no application
+
+
+# 12.5 Missing values
+
+# Surprisingly, a value can be missing in one of two possible ways:
+#   
+#   Explicitly, i.e. flagged with NA.
+# Implicitly, i.e. simply not present in the data.
+# 
+# Let’s illustrate this idea with a very simple data set:
+  
+(stocks <- tibble(
+    year   = c(2015, 2015, 2015, 2015, 2016, 2016, 2016),
+    qtr    = c(   1,    2,    3,    4,    2,    3,    4),
+    return = c(1.88, 0.59, 0.35,   NA, 0.92, 0.17, 2.66)
+  ))
+
+# The way that a dataset is represented can make implicit values explicit.
+# For example, we can make the implicit missing value explicit by putting years in the columns:
+
+(stocks_spread <- stocks %>% spread(year, return))
+
+# when we need to get rid of NA's
+
+stocks_spread %>% gather(year, return, `2015`:`2016`, na.rm = TRUE)
+stocks_spread %>% gather(`2015`, `2016`, key = "year", value = "return",
+                         na.rm = TRUE) # same result 
+
+# complete() takes a set of columns, and finds all unique combinations.
+# It then ensures the original dataset contains all those values, 
+# filling in explicit NAs where necessary.
+
+stocks %>% complete(year, qtr) # adds year = 2016, qrt = 1, return = NA
+
+# in some cases missing values indicate that the previous value 
+# should be carried forward:
+
+treatment <- tribble(
+  ~ person,           ~ treatment, ~response,
+  "Derrick Whitmore", 1,           7,
+  NA,                 2,           10,
+  NA,                 3,           9,
+  "Katherine Burke",  1,           4
+)
+
+treatment %>% fill(person) # ast observation carried forward
+
+
+# 12.5.1 Exercises
+# 
+# 1. Compare and contrast the fill arguments to spread() and complete().
+# 
+?spread
+# fill - if set, missing values will be replaced with this value. 
+# applies to both implicit and explicit missings
+
+?complete
+# A named list that for each variable supplies a single value 
+# to use instead of NA for missing combinations.
+
+# 2. What does the direction argument to fill() do?
+# makes fill "down" (default)
+# or "up"
+
+treatment %>% fill(person, .direction = "down")
+treatment %>% fill(person, .direction = "up")
