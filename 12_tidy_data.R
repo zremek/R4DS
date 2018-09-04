@@ -292,3 +292,6 @@ treatment %>% fill(person) # ast observation carried forward
 
 treatment %>% fill(person, .direction = "down")
 treatment %>% fill(person, .direction = "up")
+
+# 12.6 case study
+
