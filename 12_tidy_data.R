@@ -295,3 +295,20 @@ treatment %>% fill(person, .direction = "up")
 
 # 12.6 case study
 
+# dataset contains tuberculosis (TB) cases broken down by year, 
+# country, age, gender, and diagnosis method
+
+# http://www.who.int/tb/country/data/download/en/
+
+tidyr::who
+who
+str(who)
+summary(who)
+
+(who_1 <- who %>% gather(new_sp_m014:newrel_f65, key = "key", value = "cases", na.rm = TRUE))
+who_1 %>% count(key) %>% print(n = Inf)
+
+# We need to make a minor fix to the format of the column names:
+# unfortunately the names are slightly inconsistent
+
+(who_2 <- who_1 %>% mutate(key = stringr::str_replace(key, "newrel", "new_rel")))
