@@ -312,3 +312,17 @@ who_1 %>% count(key) %>% print(n = Inf)
 # unfortunately the names are slightly inconsistent
 
 (who_2 <- who_1 %>% mutate(key = stringr::str_replace(key, "newrel", "new_rel")))
+
+(who_3 <- who_2 %>% separate(key, into = c("new", "type", "sexage"), sep = "_"))
+
+(who_4 <- who_3 %>% select(-iso2, -iso3, -new))
+
+(who_5 <- who_4 %>% separate(sexage, c("sex", "age"), sep = 1))
+
+# normally, interactive work is more like building a pipe:
+(who_tidy <- who %>%
+  gather(key, value, new_sp_m014:newrel_f65, na.rm = TRUE) %>% 
+  mutate(key = stringr::str_replace(key, "newrel", "new_rel")) %>%
+  separate(key, c("new", "var", "sexage")) %>% 
+  select(-new, -iso2, -iso3) %>% 
+  separate(sexage, c("sex", "age"), sep = 1))
