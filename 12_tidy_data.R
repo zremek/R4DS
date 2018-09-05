@@ -326,3 +326,22 @@ who_1 %>% count(key) %>% print(n = Inf)
   separate(key, c("new", "var", "sexage")) %>% 
   select(-new, -iso2, -iso3) %>% 
   separate(sexage, c("sex", "age"), sep = 1))
+
+# 12.6.1 excercises
+
+# 1. 
+
+# 2.
+
+# 3. 
+library(forcats)
+ggplot(who, aes(x = forcats::fct_infreq(country))) + geom_bar() + coord_flip()
+
+who %>% count(country) %>% print(n = Inf)
+
+who %>% count(country) %>% filter(n < 34) %>% print(n = Inf)
+
+who %>% count(country, iso2, iso3) %>% arrange(n) %>% print(n = Inf)
+## we are sure that each country has only one cobination of iso2 and iso3,
+## because count for country has 219 entries, and
+## count for country*iso2*iso3 has also 219
