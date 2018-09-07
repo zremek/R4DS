@@ -330,8 +330,13 @@ who_1 %>% count(key) %>% print(n = Inf)
 # 12.6.1 excercises
 
 # 1. 
+## NA's are explicit missings. They represent situation of no data, 
+## compared to zeros that shows the measurement result = 0 cases
 
 # 2.
+## transformations work, but wit warning:
+#Warning message:
+#  Expected 3 pieces. Missing pieces filled with `NA` in 2580 rows
 
 # 3. 
 library(forcats)
