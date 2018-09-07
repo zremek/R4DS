@@ -345,3 +345,58 @@ who %>% count(country, iso2, iso3) %>% arrange(n) %>% print(n = Inf)
 ## we are sure that each country has only one cobination of iso2 and iso3,
 ## because count for country has 219 entries, and
 ## count for country*iso2*iso3 has also 219
+
+# 4.
+
+## divide countries into 4 quartiles of total TB cases for country:
+
+country_q1 <- who_tidy %>% group_by(country) %>% summarise(total_TB = sum(value)) %>% 
+  filter(between(total_TB, left = quantile(total_TB)[[1]], right = quantile(total_TB)[[2]])) %>% 
+  select(country)
+country_q2 <- who_tidy %>% group_by(country) %>% summarise(total_TB = sum(value)) %>% 
+  filter(between(total_TB, left = quantile(total_TB)[[2]], right = quantile(total_TB)[[3]])) %>% 
+  select(country)
+country_q3 <- who_tidy %>% group_by(country) %>% summarise(total_TB = sum(value)) %>% 
+  filter(between(total_TB, left = quantile(total_TB)[[3]], right = quantile(total_TB)[[4]])) %>% 
+  select(country)  
+country_q4 <- who_tidy %>% group_by(country) %>% summarise(total_TB = sum(value)) %>% 
+  filter(between(total_TB, left = quantile(total_TB)[[4]], right = quantile(total_TB)[[5]])) %>% 
+  select(country)  
+
+## plot
+
+who_tidy %>% filter(country %in% country_q1$country) %>% 
+  group_by(country, sex, year) %>% summarise(total_TB = sum(value)) %>%
+  filter(total_TB > 0, year >= 2000) %>% 
+  ggplot(aes(x = country, y = total_TB)) + 
+  geom_point(aes(colour = factor(year), shape = sex), 
+             size = 3, alpha = 1/2) + 
+  scale_y_log10() + coord_flip() + 
+  labs(title = "Countries form Q1 of total TB cases") + theme_minimal()
+
+who_tidy %>% filter(country %in% country_q2$country) %>% 
+  group_by(country, sex, year) %>% summarise(total_TB = sum(value)) %>%
+  filter(total_TB > 0, year >= 2000) %>% 
+  ggplot(aes(x = country, y = total_TB)) + 
+  geom_point(aes(colour = factor(year), shape = sex), 
+             size = 3, alpha = 1/2) + 
+  scale_y_log10() + coord_flip() + 
+  labs(title = "Countries form Q2 of total TB cases") + theme_minimal()
+
+who_tidy %>% filter(country %in% country_q3$country) %>% 
+  group_by(country, sex, year) %>% summarise(total_TB = sum(value)) %>%
+  filter(total_TB > 0, year >= 2000) %>% 
+  ggplot(aes(x = country, y = total_TB)) + 
+  geom_point(aes(colour = factor(year), shape = sex), 
+             size = 3, alpha = 1/2) + 
+  scale_y_log10() + coord_flip() + 
+  labs(title = "Countries form Q3 of total TB cases") + theme_minimal()
+
+who_tidy %>% filter(country %in% country_q4$country) %>% 
+  group_by(country, sex, year) %>% summarise(total_TB = sum(value)) %>%
+  filter(total_TB > 0, year >= 2000) %>% 
+  ggplot(aes(x = country, y = total_TB)) + 
+  geom_point(aes(colour = factor(year), shape = sex), 
+             size = 3, alpha = 1/2) + 
+  scale_y_log10() + coord_flip() + 
+  labs(title = "Countries form Q4 of total TB cases") + theme_minimal()
