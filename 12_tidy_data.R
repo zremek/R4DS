@@ -405,3 +405,11 @@ who_tidy %>% filter(country %in% country_q4$country) %>%
              size = 3, alpha = 1/2) + 
   scale_y_log10() + coord_flip() + 
   labs(title = "Countries form Q4 of total TB cases") + theme_minimal()
+
+# 12.7 Non-tidy data
+
+# If your data does fit naturally into a rectangular structure composed of observations
+# and variables, I think tidy data should be your default choice. But there are good 
+# reasons to use other structures; tidy data is not the only way.
+# 
+# More: http://simplystatistics.org/2016/02/17/non-tidy-data/
